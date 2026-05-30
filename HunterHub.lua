@@ -512,7 +512,7 @@ end
 -- DISCORD (Tab 1)
 local pg = tabPages[1]
 orderCounter = 0
-makeSection(pg, "Discord")
+makeSection(pg, "Discord Server")
 makeButton(pg, "Join Discord Server", function()
     pcall(function()
         if setclipboard then setclipboard("https://discord.gg/RSWfQmNamw") end
@@ -523,9 +523,9 @@ end)
 -- FARM (Tab 2)
 pg = tabPages[2]
 orderCounter = 0
-makeSection(pg, "Configuration")
-makeDropdown(pg, "Select Tool", {"Melee", "Sword", "Gun", "Bloxfruit"}, "SelectedTool", function(v) SelectWeapon = v end)
-makeSection(pg, "Auto Farm")
+makeSection(pg, "Farming Configuration")
+makeDropdown(pg, "Select Main Tool", {"Melee", "Sword", "Gun", "Bloxfruit"}, "SelectedTool", function(v) SelectWeapon = v end)
+makeSection(pg, "Auto Farming")
 makeToggle(pg, "Auto Level Farm", false, function(v) _G.AutoFarm = v end, "AutoFarm")
 makeToggle(pg, "Auto Farm Nearest", false, function(v) _G.AutoFarmNearest = v end, "AutoFarmNearest")
 makeToggle(pg, "Fast Attack", false, function(v) _G.FastAttack = v end, "FastAttack")
@@ -534,15 +534,15 @@ makeToggle(pg, "Bring Mobs", false, function(v) _G.BringMobs = v end, "BringMobs
 -- FRUIT (Tab 3)
 pg = tabPages[3]
 orderCounter = 0
-makeSection(pg, "Fruit Management")
-makeToggle(pg, "Roll Random Fruit", false, function(v) _G.RandomAuto = v end, "RandomAuto")
-makeToggle(pg, "Store Bloxfruit", false, function(v) _G.AutoStoreFruit = v end, "AutoStoreFruit")
-makeToggle(pg, "Tp To Bloxfruit", false, function(v) _G.Tweenfruit = v end, "Tweenfruit")
+makeSection(pg, "Fruits Configuration")
+makeToggle(pg, "Auto Roll Fruit", false, function(v) _G.RandomAuto = v end, "RandomAuto")
+makeToggle(pg, "Auto Store Fruit", false, function(v) _G.AutoStoreFruit = v end, "AutoStoreFruit")
+makeToggle(pg, "Auto Tp To Fruit", false, function(v) _G.Tweenfruit = v end, "Tweenfruit")
 
 -- STATS (Tab 4)
 pg = tabPages[4]
 orderCounter = 0
-makeSection(pg, "Auto Stats")
+makeSection(pg, "Stats Configuration")
 local statLabels = {}
 local statTypes = {"Melee", "Defense", "Sword", "Gun", "Blox Fruit"}
 for _, stat in ipairs(statTypes) do
