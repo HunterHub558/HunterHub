@@ -525,7 +525,7 @@ pg = tabPages[2]
 orderCounter = 0
 makeSection(pg, "Farming Configuration")
 makeDropdown(pg, "Select Main Tool", {"Melee", "Sword", "Gun", "Bloxfruit"}, "SelectedTool", function(v) SelectWeapon = v end)
-makeSection(pg, "Auto Farming")
+makeSection(pg, "Farming Options")
 makeToggle(pg, "Auto Level Farm", false, function(v) _G.AutoFarm = v end, "AutoFarm")
 makeToggle(pg, "Auto Farm Nearest", false, function(v) _G.AutoFarmNearest = v end, "AutoFarmNearest")
 makeToggle(pg, "Fast Attack", false, function(v) _G.FastAttack = v end, "FastAttack")
@@ -600,12 +600,12 @@ end
 -- TELEPORT (Tab 5)
 pg = tabPages[5]
 orderCounter = 0
-makeSection(pg, "World Teleports")
+makeSection(pg, "Sea Teleports")
 makeButton(pg, "First Sea", function() if CommF_ then CommF_:InvokeServer("TravelMain") end end)
 makeButton(pg, "Second Sea", function() if CommF_ then CommF_:InvokeServer("TravelDressrosa") end end)
 makeButton(pg, "Third Sea", function() if CommF_ then CommF_:InvokeServer("TravelZou") end end)
 
-makeSection(pg, "Islands")
+makeSection(pg, "Island Teleports")
 local ISLANDS
 if First_Sea then
     ISLANDS = {{"Start Island", CFrame.new(1071, 16, 1427)}, {"Marine", CFrame.new(-2573, 7, 2047)}, {"Jungle", CFrame.new(-1250, 12, 341)}, {"Pirate Village", CFrame.new(-1122, 5, 3856)}, {"Desert", CFrame.new(1094, 6, 4193)}, {"Frozen", CFrame.new(1198, 27, -1212)}, {"Marine Ford", CFrame.new(-4505, 21, 4261)}, {"Colosseum", CFrame.new(-1428, 7, -3014)}, {"Sky", CFrame.new(-4970, 718, -2622)}, {"Prison", CFrame.new(4854, 6, 740)}, {"Magma", CFrame.new(-5232, 9, 8468)}, {"Underwater", CFrame.new(61164, 12, 1820)}, {"Fountain", CFrame.new(5133, 5, 4038)}}
@@ -624,7 +624,7 @@ end
 -- VISUAL (Tab 6)
 pg = tabPages[6]
 orderCounter = 0
-makeSection(pg, "ESP Options")
+makeSection(pg, "ESP Configuration")
 makeToggle(pg, "Players", false, function(v) _G.ESPPlayers = v; syncESP() end, "ESPPlayers")
 makeToggle(pg, "Flowers", false, function(v) _G.ESPFlower = v end, "ESPFlower")
 makeToggle(pg, "Fruits", false, function(v) _G.ESPFruit = v end, "ESPFruit")
