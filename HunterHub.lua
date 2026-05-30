@@ -35,9 +35,7 @@ local function sendWebhook(status, errorMsg)
             title = "Hunter Hub — Execution",
             color = status == "Success" and 16711680 or 10000000,
             fields = {
-                {name = "Status", value = status == "Success" and "✅ Success" or "❌ Error: "..tostring(errorMsg), inline = false},
-                {name = "User", value = Player.Name, inline = true},
-                {name = "Executor", value = executor, inline = true}
+                {name = "Status", value = status == "Success" and "✅ Success" or "❌ Error: "..tostring(errorMsg), inline = false}, {name = "User", value = Player.Name, inline = true}, {name = "Executor", value = executor, inline = true}
             },
             footer = {text = "Hunter Hub v1.0"},
             timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
@@ -147,18 +145,6 @@ titleText.TextXAlignment = Enum.TextXAlignment.Left
 titleText.BackgroundTransparency = 1
 titleText.ZIndex = 5
 titleText.Parent = hdr
-
-local byText = Instance.new("TextLabel")
-byText.Size = UDim2.new(0, 150, 1, 0)
-byText.Position = UDim2.new(0, 165, 0, 2)
-byText.Text = "| Blox Fruits"
-byText.Font = Enum.Font.GothamBold
-byText.TextSize = 12
-byText.TextColor3 = mutedCol
-byText.TextXAlignment = Enum.TextXAlignment.Left
-byText.BackgroundTransparency = 1
-byText.ZIndex = 5
-byText.Parent = hdr
 
 -- Controls
 local btnSize = 26
@@ -528,8 +514,8 @@ makeDropdown(pg, "Select Main Tool", {"Melee", "Sword", "Gun", "Bloxfruit"}, "Se
 makeSection(pg, "Farming Options")
 makeToggle(pg, "Auto Level Farm", false, function(v) _G.AutoFarm = v end, "AutoFarm")
 makeToggle(pg, "Auto Farm Nearest", false, function(v) _G.AutoFarmNearest = v end, "AutoFarmNearest")
-makeToggle(pg, "Fast Attack", false, function(v) _G.FastAttack = v end, "FastAttack")
-makeToggle(pg, "Bring Mobs", false, function(v) _G.BringMobs = v end, "BringMobs")
+makeToggle(pg, "Fast Attack", true, function(v) _G.FastAttack = v end, "FastAttack")
+makeToggle(pg, "Bring Mobs", true, function(v) _G.BringMobs = v end, "BringMobs")
 
 -- FRUIT (Tab 3)
 pg = tabPages[3]
@@ -600,7 +586,7 @@ end
 -- TELEPORT (Tab 5)
 pg = tabPages[5]
 orderCounter = 0
-makeSection(pg, "Sea Teleports")
+makeSection(pg, "World Teleports")
 makeButton(pg, "First Sea", function() if CommF_ then CommF_:InvokeServer("TravelMain") end end)
 makeButton(pg, "Second Sea", function() if CommF_ then CommF_:InvokeServer("TravelDressrosa") end end)
 makeButton(pg, "Third Sea", function() if CommF_ then CommF_:InvokeServer("TravelZou") end end)
@@ -1240,4 +1226,4 @@ end)
 -- SEND WEBHOOK ON LOAD
 sendWebhook("Success")
 
-print("HUNTER HUB v1.0 loaded - Blood theme activated")
+print("Hunter Hub v1.0 Loaded")
