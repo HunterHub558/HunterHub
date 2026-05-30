@@ -30,14 +30,18 @@ local function sendWebhook(status, errorMsg)
         end
     end)
     
+    local isSuccess = status == "Success"
+    -- Green (0x00FF00 = 65280) for success, Red (0xFF0000 = 16711680) for error
+    local embedColor = isSuccess and 65280 or 16711680
+    
     local data = {
         embeds = {{
             title = "Hunter Hub — Execution",
-            color = status == "Success" and 16711680 or 10000000,
+            color = embedColor,
             fields = {
-                {name = "Status", value = status == "Success" and "✅ Success" or "❌ Error: "..tostring(errorMsg), inline = true},
-                {name = "User", value = Player.Name, inline = true},
-                {name = "Executor", value = executor, inline = true}
+                {name = "`Status`", value = isSuccess and "**Success**" or "**Error**: "..tostring(errorMsg), inline = true},
+                {name = "`User`", value = "**"..Player.Name.."**", inline = true},
+                {name = "`Executor`", value = "**"..executor.."**", inline = true}
             },
             footer = {text = "Hunter Hub v1.0"},
             timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
