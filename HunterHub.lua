@@ -1,6 +1,4 @@
 -- HUNTER HUB v1.0 - Blox Fruits
--- Features: Auto Farm, ESP, Teleports, Shop, Webhook Logging
-
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local UIS = game:GetService("UserInputService")
@@ -42,7 +40,7 @@ local function sendWebhook(status, errorMsg)
                 {name = "Executor", value = executor, inline = true}
             },
             footer = {text = "Hunter Hub v1.0"},
-            timestamp = DateTime.now():ToIsoDate()
+            timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
         }}
     }
     
@@ -60,20 +58,23 @@ local function sendWebhook(status, errorMsg)
     end)
 end
 
--- THEME
+-- THEME (Blood/Dark)
 local bgCol = Color3.fromRGB(8, 8, 10)
-local sidebarCol = Color3.fromRGB(12, 12, 15)
+local hdrCol = Color3.fromRGB(12, 12, 15)
 local cardCol = Color3.fromRGB(20, 20, 25)
-local hoverCol = Color3.fromRGB(30, 30, 35)
-local accent = Color3.fromRGB(180, 0, 0)
-local accentGlow = Color3.fromRGB(220, 20, 20)
+local borderCol = Color3.fromRGB(40, 40, 45)
 local txtCol = Color3.fromRGB(240, 240, 240)
 local mutedCol = Color3.fromRGB(120, 120, 120)
-local toggleOff = Color3.fromRGB(50, 50, 55)
-local toggleOn = accent
+local dimCol = Color3.fromRGB(30, 30, 35)
+local accent = Color3.fromRGB(180, 0, 0)
+local accentGlow = Color3.fromRGB(220, 20, 20)
 
-local function tw(t,s,d) return TweenInfo.new(t or 0.2,s or Enum.EasingStyle.Quart,d or Enum.EasingDirection.Out) end
-local function mkC(p,r) Instance.new("UICorner",p).CornerRadius = UDim.new(0,r or 6) end
+local function tw(t,s,d) return TweenInfo.new(t or 0.2, s or Enum.EasingStyle.Quart, d or Enum.EasingDirection.Out) end
+local function mkC(p,r) 
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, r or 6)
+    c.Parent = p
+end
 
 -- GUI SETUP
 local sg = Instance.new("ScreenGui")
@@ -93,7 +94,10 @@ espGui.DisplayOrder = 998
 espGui.Parent = Player:WaitForChild("PlayerGui")
 
 local Camera = WS.CurrentCamera
-local WIN_W, WIN_H, SIDEBAR_W = 750, 520, 200
+local WIN_W = 750
+local WIN_H = 520
+local HDR_H = 45
+local TAB_H = 38
 
 local win = Instance.new("Frame")
 win.Size = UDim2.new(0, WIN_W, 0, WIN_H)
@@ -104,7 +108,7 @@ win.ClipsDescendants = true
 win.Parent = sg
 mkC(win, 8)
 
--- Blood drip
+-- Blood drip accent
 local bloodDrip = Instance.new("Frame")
 bloodDrip.Size = UDim2.new(1, 0, 0, 3)
 bloodDrip.BackgroundColor3 = accent
@@ -122,14 +126,16 @@ glow.ImageTransparency = 0.95
 glow.ZIndex = -1
 glow.Parent = win
 
--- Title bar
-local titleBar = Instance.new("Frame")
-titleBar.Size = UDim2.new(1, 0, 0, 45)
-titleBar.Position = UDim2.new(0, 0, 0, 3)
-titleBar.BackgroundColor3 = sidebarCol
-titleBar.BorderSizePixel = 0
-titleBar.Parent = win
+-- Header
+local hdr = Instance.new("Frame")
+hdr.Size = UDim2.new(1, 0, 0, HDR_H)
+hdr.Position = UDim2.new(0, 0, 0, 3)
+hdr.BackgroundColor3 = hdrCol
+hdr.BorderSizePixel = 0
+hdr.ZIndex = 3
+hdr.Parent = win
 
+-- Title
 local titleText = Instance.new("TextLabel")
 titleText.Size = UDim2.new(0, 250, 1, 0)
 titleText.Position = UDim2.new(0, 15, 0, 0)
@@ -139,14 +145,8 @@ titleText.TextSize = 22
 titleText.TextColor3 = accent
 titleText.TextXAlignment = Enum.TextXAlignment.Left
 titleText.BackgroundTransparency = 1
-titleText.Parent = titleBar
-
-local titleDrip = Instance.new("Frame")
-titleDrip.Size = UDim2.new(0, 140, 0, 2)
-titleDrip.Position = UDim2.new(0, 15, 1, -2)
-titleDrip.BackgroundColor3 = accent
-titleDrip.BorderSizePixel = 0
-titleDrip.Parent = titleBar
+titleText.ZIndex = 5
+titleText.Parent = hdr
 
 local byText = Instance.new("TextLabel")
 byText.Size = UDim2.new(0, 150, 1, 0)
@@ -157,7 +157,8 @@ byText.TextSize = 12
 byText.TextColor3 = mutedCol
 byText.TextXAlignment = Enum.TextXAlignment.Left
 byText.BackgroundTransparency = 1
-byText.Parent = titleBar
+byText.ZIndex = 5
+byText.Parent = hdr
 
 -- Controls
 local btnSize = 26
@@ -170,7 +171,8 @@ minBtn.TextSize = 14
 minBtn.TextColor3 = mutedCol
 minBtn.BackgroundColor3 = cardCol
 minBtn.BorderSizePixel = 0
-minBtn.Parent = titleBar
+minBtn.ZIndex = 5
+minBtn.Parent = hdr
 mkC(minBtn, 6)
 
 local closeBtn = Instance.new("TextButton")
@@ -182,353 +184,320 @@ closeBtn.TextSize = 16
 closeBtn.TextColor3 = mutedCol
 closeBtn.BackgroundColor3 = cardCol
 closeBtn.BorderSizePixel = 0
-closeBtn.Parent = titleBar
+closeBtn.ZIndex = 5
+closeBtn.Parent = hdr
 mkC(closeBtn, 6)
 
--- Sidebar
-local sidebar = Instance.new("Frame")
-sidebar.Size = UDim2.new(0, SIDEBAR_W, 1, -48)
-sidebar.Position = UDim2.new(0, 0, 0, 48)
-sidebar.BackgroundColor3 = sidebarCol
-sidebar.BorderSizePixel = 0
-sidebar.Parent = win
+-- Minimize/close functionality
+local isMin = false
+minBtn.MouseEnter:Connect(function() TS:Create(minBtn, tw(), {BackgroundColor3=accent, TextColor3=Color3.new(1,1,1)}):Play() end)
+minBtn.MouseLeave:Connect(function() TS:Create(minBtn, tw(), {BackgroundColor3=cardCol, TextColor3=mutedCol}):Play() end)
+minBtn.MouseButton1Click:Connect(function()
+    isMin = not isMin
+    if isMin then
+        TS:Create(win, tw(0.3), {Size=UDim2.new(0, WIN_W, 0, HDR_H+3)}):Play()
+        minBtn.Text = "+"
+    else
+        TS:Create(win, tw(0.3), {Size=UDim2.new(0, WIN_W, 0, WIN_H)}):Play()
+        minBtn.Text = "−"
+    end
+end)
 
-local sideAccent = Instance.new("Frame")
-sideAccent.Size = UDim2.new(0, 2, 1, 0)
-sideAccent.Position = UDim2.new(1, -2, 0, 0)
-sideAccent.BackgroundColor3 = accent
-sideAccent.BorderSizePixel = 0
-sideAccent.Parent = sidebar
+closeBtn.MouseEnter:Connect(function() TS:Create(closeBtn, tw(), {BackgroundColor3=Color3.fromRGB(200,30,30), TextColor3=Color3.new(1,1,1)}):Play() end)
+closeBtn.MouseLeave:Connect(function() TS:Create(closeBtn, tw(), {BackgroundColor3=cardCol, TextColor3=mutedCol}):Play() end)
+closeBtn.MouseButton1Click:Connect(function()
+    cleanupAllESP()
+    sg:Destroy()
+    espGui:Destroy()
+end)
 
-local sidebarList = Instance.new("UIListLayout")
-sidebarList.Padding = UDim.new(0, 4)
-sidebarList.SortOrder = Enum.SortOrder.LayoutOrder
-sidebarList.Parent = sidebar
+-- Drag
+local dragging = false
+local dragStart, startPos
+hdr.InputBegan:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = i.Position
+        startPos = win.Position
+    end
+end)
+UIS.InputChanged:Connect(function(i)
+    if dragging and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
+        local delta = i.Position - dragStart
+        win.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
+hdr.InputEnded:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+        dragging = false
+    end
+end)
 
-local sidebarPadding = Instance.new("UIPadding")
-sidebarPadding.PaddingTop = UDim.new(0, 15)
-sidebarPadding.PaddingLeft = UDim.new(0, 12)
-sidebarPadding.PaddingRight = UDim.new(0, 12)
-sidebarPadding.Parent = sidebar
+-- TABS
+local TABS = {"Discord", "Farm", "Fruit", "Stats", "Teleport", "Visual", "Shop", "Misc"}
+local tabBtns, tabPages = {}, {}
+local tabBar = Instance.new("Frame")
+tabBar.Size = UDim2.new(1, -16, 0, TAB_H)
+tabBar.Position = UDim2.new(0, 8, 0, HDR_H + 8)
+tabBar.BackgroundTransparency = 1
+tabBar.Parent = win
 
--- Content
-local contentFrame = Instance.new("Frame")
-contentFrame.Size = UDim2.new(1, -SIDEBAR_W, 1, -48)
-contentFrame.Position = UDim2.new(0, SIDEBAR_W, 0, 48)
-contentFrame.BackgroundColor3 = bgCol
-contentFrame.BorderSizePixel = 0
-contentFrame.Parent = win
+local tl = Instance.new("UIListLayout")
+tl.FillDirection = Enum.FillDirection.Horizontal
+tl.SortOrder = Enum.SortOrder.LayoutOrder
+tl.Padding = UDim.new(0, 4)
+tl.Parent = tabBar
 
-local contentPadding = Instance.new("UIPadding")
-contentPadding.Padding = UDim.new(0, 20)
-contentPadding.Parent = contentFrame
+local content = Instance.new("Frame")
+content.Size = UDim2.new(1, -16, 1, -(HDR_H + TAB_H + 16))
+content.Position = UDim2.new(0, 8, 0, HDR_H + TAB_H + 12)
+content.BackgroundTransparency = 1
+content.Parent = win
 
--- Pages
-local pages = {}
-local currentPage = nil
+local function switchTab(idx)
+    for i, btn in ipairs(tabBtns) do
+        local on = (i == idx)
+        TS:Create(btn, tw(0.15), {BackgroundColor3 = on and accent or dimCol, TextColor3 = on and Color3.new(1,1,1) or mutedCol}):Play()
+        tabPages[i].Visible = on
+    end
+end
 
-local function createPage(name)
+for i, name in ipairs(TABS) do
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1/#TABS, -4, 1, 0)
+    btn.BackgroundColor3 = i == 1 and accent or dimCol
+    btn.TextColor3 = i == 1 and Color3.new(1,1,1) or mutedCol
+    btn.Text = name
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 10
+    btn.BorderSizePixel = 0
+    btn.LayoutOrder = i
+    btn.Parent = tabBar
+    mkC(btn, 6)
+    tabBtns[i] = btn
+    
     local page = Instance.new("ScrollingFrame")
-    page.Name = name.."Page"
     page.Size = UDim2.new(1, 0, 1, 0)
     page.BackgroundTransparency = 1
-    page.BorderSizePixel = 0
+    page.Visible = i == 1
     page.ScrollBarThickness = 4
     page.ScrollBarImageColor3 = accent
     page.CanvasSize = UDim2.new(0, 0, 0, 0)
     page.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    page.Visible = false
-    page.Parent = contentFrame
+    page.Parent = content
+    tabPages[i] = page
     
     local list = Instance.new("UIListLayout")
-    list.Padding = UDim.new(0, 12)
     list.SortOrder = Enum.SortOrder.LayoutOrder
+    list.Padding = UDim.new(0, 8)
     list.Parent = page
     
-    pages[name] = page
-    return page
+    local pp = Instance.new("UIPadding")
+    pp.PaddingTop = UDim.new(0, 4)
+    pp.PaddingBottom = UDim.new(0, 8)
+    pp.Parent = page
+    
+    btn.MouseButton1Click:Connect(function() switchTab(i) end)
 end
 
-local discordPage = createPage("Discord")
-local farmPage = createPage("Farm")
-local fruitPage = createPage("FruitRaid")
-local statsPage = createPage("Stats")
-local teleportPage = createPage("Teleport")
-local visualPage = createPage("Visual")
-local shopPage = createPage("Shop")
-local miscPage = createPage("Misc")
-
--- Sidebar buttons
-local function createSidebarButton(name, icon, page, order)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 38)
-    btn.BackgroundColor3 = sidebarCol
-    btn.Text = ""
-    btn.LayoutOrder = order
-    btn.Parent = sidebar
-    mkC(btn, 6)
-    
-    local iconLabel = Instance.new("TextLabel")
-    iconLabel.Size = UDim2.new(0, 26, 0, 26)
-    iconLabel.Position = UDim2.new(0, 10, 0.5, -13)
-    iconLabel.Text = icon
-    iconLabel.Font = Enum.Font.GothamBold
-    iconLabel.TextSize = 14
-    iconLabel.TextColor3 = mutedCol
-    iconLabel.BackgroundTransparency = 1
-    iconLabel.Parent = btn
-    
-    local textLabel = Instance.new("TextLabel")
-    textLabel.Size = UDim2.new(1, -50, 1, 0)
-    textLabel.Position = UDim2.new(0, 42, 0, 0)
-    textLabel.Text = name
-    textLabel.Font = Enum.Font.GothamBold
-    textLabel.TextSize = 13
-    textLabel.TextColor3 = mutedCol
-    textLabel.TextXAlignment = Enum.TextXAlignment.Left
-    textLabel.BackgroundTransparency = 1
-    textLabel.Parent = btn
-    
-    local indicator = Instance.new("Frame")
-    indicator.Size = UDim2.new(0, 3, 0, 0)
-    indicator.Position = UDim2.new(0, 0, 0.5, 0)
-    indicator.BackgroundColor3 = accent
-    indicator.BorderSizePixel = 0
-    indicator.Parent = btn
-    mkC(indicator, 2)
-    
-    btn.MouseEnter:Connect(function()
-        if currentPage ~= page then TS:Create(btn, tw(0.15), {BackgroundColor3 = cardCol}):Play() end
-    end)
-    
-    btn.MouseLeave:Connect(function()
-        if currentPage ~= page then TS:Create(btn, tw(0.15), {BackgroundColor3 = sidebarCol}):Play() end
-    end)
-    
-    btn.MouseButton1Click:Connect(function()
-        if currentPage then currentPage.Visible = false end
-        
-        for _, child in pairs(sidebar:GetChildren()) do
-            if child:IsA("TextButton") then
-                TS:Create(child, tw(0.15), {BackgroundColor3 = sidebarCol}):Play()
-                local ind = child:FindFirstChildOfClass("Frame")
-                if ind then TS:Create(ind, tw(0.15), {Size = UDim2.new(0, 3, 0, 0)}):Play() end
-                local txt = child:FindFirstChildOfClass("TextLabel", 2)
-                if txt then TS:Create(txt, tw(0.15), {TextColor3 = mutedCol}):Play() end
-                local ico = child:FindFirstChildOfClass("TextLabel", 1)
-                if ico then TS:Create(ico, tw(0.15), {TextColor3 = mutedCol}):Play() end
-            end
-        end
-        
-        TS:Create(btn, tw(0.15), {BackgroundColor3 = cardCol}):Play()
-        TS:Create(indicator, tw(0.15), {Size = UDim2.new(0, 3, 0, 24), Position = UDim2.new(0, 0, 0.5, -12)}):Play()
-        TS:Create(textLabel, tw(0.15), {TextColor3 = accent}):Play()
-        TS:Create(iconLabel, tw(0.15), {TextColor3 = accent}):Play()
-        
-        page.Visible = true
-        currentPage = page
-    end)
-    
-    return btn
-end
-
-createSidebarButton("Discord", "☰", discordPage, 1)
-createSidebarButton("Farm", "⚔", farmPage, 2)
-createSidebarButton("Fruit/Raid", "🍎", fruitPage, 3)
-createSidebarButton("Stats", "📊", statsPage, 4)
-createSidebarButton("Teleport", "🚀", teleportPage, 5)
-createSidebarButton("Visual", "👁", visualPage, 6)
-createSidebarButton("Shop", "🛒", shopPage, 7)
-createSidebarButton("Misc", "⚙", miscPage, 8)
-
--- UI Builders
-local function makeSectionTitle(parent, text)
-    local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(1, 0, 0, 28)
-    title.Text = text
-    title.Font = Enum.Font.GothamBlack
-    title.TextSize = 18
-    title.TextColor3 = accent
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    title.BackgroundTransparency = 1
-    title.LayoutOrder = #parent:GetChildren()
-    title.Parent = parent
-    
-    local line = Instance.new("Frame")
-    line.Size = UDim2.new(0, 40, 0, 2)
-    line.Position = UDim2.new(0, 0, 1, -2)
-    line.BackgroundColor3 = accent
-    line.BorderSizePixel = 0
-    line.Parent = title
-    return title
-end
-
-local function makeSubText(parent, text)
-    local sub = Instance.new("TextLabel")
-    sub.Size = UDim2.new(1, 0, 0, 20)
-    sub.Text = text
-    sub.Font = Enum.Font.Gotham
-    sub.TextSize = 12
-    sub.TextColor3 = mutedCol
-    sub.TextXAlignment = Enum.TextXAlignment.Left
-    sub.BackgroundTransparency = 1
-    sub.LayoutOrder = #parent:GetChildren()
-    sub.Parent = parent
-    return sub
-end
-
-local function makeCard(parent, height)
-    local card = Instance.new("Frame")
-    card.Size = UDim2.new(1, 0, 0, height or 50)
-    card.BackgroundColor3 = cardCol
-    card.BorderSizePixel = 0
-    card.LayoutOrder = #parent:GetChildren()
-    card.Parent = parent
-    mkC(card, 8)
-    
-    local stroke = Instance.new("UIStroke")
-    stroke.Color = borderCol
-    stroke.Thickness = 1
-    stroke.Parent = card
-    return card
+-- UI BUILDERS
+local orderCounter = 0
+local function nextOrder()
+    orderCounter = orderCounter + 1
+    return orderCounter
 end
 
 local toggleRegistry = {}
-local function makeToggle(parent, title, desc, default, callback, regName)
-    local card = makeCard(parent, 65)
+
+local function makeSection(p, l)
+    local f = Instance.new("Frame")
+    f.Size = UDim2.new(1, 0, 0, 20)
+    f.BackgroundTransparency = 1
+    f.LayoutOrder = nextOrder()
+    f.Parent = p
     
-    local titleLbl = Instance.new("TextLabel")
-    titleLbl.Size = UDim2.new(1, -80, 0, 22)
-    titleLbl.Position = UDim2.new(0, 15, 0, 12)
-    titleLbl.Text = title
-    titleLbl.Font = Enum.Font.GothamBold
-    titleLbl.TextSize = 14
-    titleLbl.TextColor3 = txtCol
-    titleLbl.TextXAlignment = Enum.TextXAlignment.Left
-    titleLbl.BackgroundTransparency = 1
-    titleLbl.Parent = card
+    local lb = Instance.new("TextLabel")
+    lb.Size = UDim2.new(1, 0, 1, 0)
+    lb.Text = string.upper(l)
+    lb.Font = Enum.Font.GothamBlack
+    lb.TextSize = 12
+    lb.TextColor3 = accent
+    lb.TextXAlignment = Enum.TextXAlignment.Left
+    lb.BackgroundTransparency = 1
+    lb.Parent = f
     
-    local descLbl = Instance.new("TextLabel")
-    descLbl.Size = UDim2.new(1, -80, 0, 18)
-    descLbl.Position = UDim2.new(0, 15, 0, 36)
-    descLbl.Text = desc or ""
-    descLbl.Font = Enum.Font.Gotham
-    descLbl.TextSize = 11
-    descLbl.TextColor3 = mutedCol
-    descLbl.TextXAlignment = Enum.TextXAlignment.Left
-    descLbl.BackgroundTransparency = 1
-    descLbl.Parent = card
-    
-    local toggleBg = Instance.new("Frame")
-    toggleBg.Size = UDim2.new(0, 50, 0, 26)
-    toggleBg.Position = UDim2.new(1, -60, 0.5, -13)
-    toggleBg.BackgroundColor3 = default and accent or toggleOff
-    toggleBg.Parent = card
-    mkC(toggleBg, 13)
-    
-    local knob = Instance.new("Frame")
-    knob.Size = UDim2.new(0, 20, 0, 20)
-    knob.Position = default and UDim2.new(1, -24, 0.5, -10) or UDim2.new(0, 3, 0.5, -10)
-    knob.BackgroundColor3 = Color3.new(1, 1, 1)
-    knob.Parent = toggleBg
-    mkC(knob, 10)
-    
-    local state = default
-    local function setState(newState)
-        state = newState
-        TS:Create(toggleBg, tw(0.2), {BackgroundColor3 = state and accent or toggleOff}):Play()
-        TS:Create(knob, tw(0.2), {Position = state and UDim2.new(1, -24, 0.5, -10) or UDim2.new(0, 3, 0.5, -10)}):Play()
-        pcall(callback, state)
-    end
-    
-    local clickArea = Instance.new("TextButton")
-    clickArea.Size = UDim2.new(1, 0, 1, 0)
-    clickArea.BackgroundTransparency = 1
-    clickArea.Text = ""
-    clickArea.Parent = card
-    clickArea.MouseButton1Click:Connect(function() state = not state; setState(state) end)
-    
-    if regName then toggleRegistry[regName] = {setState = setState, getState = function() return state end} end
-    return card
+    local ln = Instance.new("Frame")
+    ln.Size = UDim2.new(0, 40, 0, 2)
+    ln.Position = UDim2.new(0, 0, 1, -2)
+    ln.BackgroundColor3 = accent
+    ln.BorderSizePixel = 0
+    ln.Parent = f
+    mkC(ln, 4)
 end
 
-local function makeDropdown(parent, title, options, varName, callback)
-    local card = makeCard(parent, 55)
+local function makeToggle(p, l, default, cb, regName)
+    local rH = 50
+    local r = Instance.new("Frame")
+    r.Size = UDim2.new(1, 0, 0, rH)
+    r.BackgroundColor3 = cardCol
+    r.BorderSizePixel = 0
+    r.LayoutOrder = nextOrder()
+    r.Parent = p
+    mkC(r, 8)
     
-    local titleLbl = Instance.new("TextLabel")
-    titleLbl.Size = UDim2.new(0.4, 0, 1, 0)
-    titleLbl.Position = UDim2.new(0, 15, 0, 0)
-    titleLbl.Text = title
-    titleLbl.Font = Enum.Font.GothamBold
-    titleLbl.TextSize = 13
-    titleLbl.TextColor3 = txtCol
-    titleLbl.TextXAlignment = Enum.TextXAlignment.Left
-    titleLbl.BackgroundTransparency = 1
-    titleLbl.Parent = card
+    local st = default or false
     
-    local dropdown = Instance.new("TextButton")
-    dropdown.Size = UDim2.new(0.5, -10, 0, 36)
-    dropdown.Position = UDim2.new(0.5, 5, 0.5, -18)
-    dropdown.BackgroundColor3 = hoverCol
-    dropdown.Text = _G[varName] or options[1]
-    dropdown.Font = Enum.Font.GothamBold
-    dropdown.TextSize = 12
-    dropdown.TextColor3 = txtCol
-    dropdown.Parent = card
-    mkC(dropdown, 6)
+    local lb = Instance.new("TextLabel")
+    lb.Size = UDim2.new(1, -70, 1, 0)
+    lb.Position = UDim2.new(0, 12, 0, 0)
+    lb.Text = l
+    lb.Font = Enum.Font.GothamBold
+    lb.TextSize = 12
+    lb.TextColor3 = txtCol
+    lb.TextXAlignment = Enum.TextXAlignment.Left
+    lb.BackgroundTransparency = 1
+    lb.Parent = r
+    
+    local pl = Instance.new("Frame")
+    pl.Size = UDim2.new(0, 50, 0, 26)
+    pl.Position = UDim2.new(1, -60, 0.5, -13)
+    pl.BackgroundColor3 = st and accent or dimCol
+    pl.Parent = r
+    mkC(pl, 13)
+    
+    local kn = Instance.new("Frame")
+    kn.Size = UDim2.new(0, 20, 0, 20)
+    kn.Position = st and UDim2.new(1, -24, 0.5, -10) or UDim2.new(0, 3, 0.5, -10)
+    kn.BackgroundColor3 = st and Color3.new(1,1,1) or mutedCol
+    kn.Parent = pl
+    mkC(kn, 10)
+    
+    local ht = Instance.new("TextButton")
+    ht.Size = UDim2.new(1, 0, 1, 0)
+    ht.BackgroundTransparency = 1
+    ht.Text = ""
+    ht.Parent = r
+    
+    local function setVisual(state)
+        TS:Create(pl, tw(0.2), {BackgroundColor3 = state and accent or dimCol}):Play()
+        TS:Create(kn, tw(0.2), {Position = state and UDim2.new(1, -24, 0.5, -10) or UDim2.new(0, 3, 0.5, -10), BackgroundColor3 = state and Color3.new(1,1,1) or mutedCol}):Play()
+    end
+    
+    local function tg()
+        st = not st
+        setVisual(st)
+        pcall(cb, st)
+    end
+    
+    local function setState(newState)
+        if st ~= newState then
+            st = newState
+            setVisual(st)
+            pcall(cb, st)
+        end
+    end
+    
+    ht.MouseButton1Click:Connect(tg)
+    ht.TouchTap:Connect(tg)
+    
+    if regName then toggleRegistry[regName] = {setState = setState, getState = function() return st end} end
+end
+
+local function makeButton(p, l, cb)
+    local rH = 42
+    local bt = Instance.new("TextButton")
+    bt.Size = UDim2.new(1, 0, 0, rH)
+    bt.BackgroundColor3 = accent
+    bt.Text = l
+    bt.Font = Enum.Font.GothamBlack
+    bt.TextSize = 12
+    bt.TextColor3 = Color3.new(1,1,1)
+    bt.LayoutOrder = nextOrder()
+    bt.BorderSizePixel = 0
+    bt.Parent = p
+    mkC(bt, 8)
+    bt.MouseButton1Click:Connect(cb)
+    bt.TouchTap:Connect(cb)
+end
+
+local function makeDropdown(p, l, options, varName, cb)
+    local rH = 55
+    local r = Instance.new("Frame")
+    r.Size = UDim2.new(1, 0, 0, rH)
+    r.BackgroundColor3 = cardCol
+    r.LayoutOrder = nextOrder()
+    r.BorderSizePixel = 0
+    r.Parent = p
+    mkC(r, 8)
+    
+    local lb = Instance.new("TextLabel")
+    lb.Size = UDim2.new(0.4, 0, 1, 0)
+    lb.Position = UDim2.new(0, 12, 0, 0)
+    lb.Text = l
+    lb.Font = Enum.Font.GothamBold
+    lb.TextSize = 11
+    lb.TextColor3 = txtCol
+    lb.TextXAlignment = Enum.TextXAlignment.Left
+    lb.BackgroundTransparency = 1
+    lb.Parent = r
+    
+    _G[varName] = _G[varName] or options[1]
+    
+    local dd = Instance.new("TextButton")
+    dd.Size = UDim2.new(0.55, -10, 0, 36)
+    dd.Position = UDim2.new(0.45, 0, 0.5, -18)
+    dd.BackgroundColor3 = dimCol
+    dd.Text = _G[varName]
+    dd.Font = Enum.Font.GothamBold
+    dd.TextSize = 10
+    dd.TextColor3 = txtCol
+    dd.BorderSizePixel = 0
+    dd.Parent = r
+    mkC(dd, 6)
     
     local accentLine = Instance.new("Frame")
     accentLine.Size = UDim2.new(1, 0, 0, 2)
     accentLine.Position = UDim2.new(0, 0, 1, -2)
     accentLine.BackgroundColor3 = accent
     accentLine.BorderSizePixel = 0
-    accentLine.Parent = dropdown
-    
-    local arrow = Instance.new("TextLabel")
-    arrow.Size = UDim2.new(0, 20, 1, 0)
-    arrow.Position = UDim2.new(1, -25, 0, 0)
-    arrow.Text = "⌄"
-    arrow.Font = Enum.Font.GothamBold
-    arrow.TextSize = 16
-    arrow.TextColor3 = accent
-    arrow.BackgroundTransparency = 1
-    arrow.Parent = dropdown
+    accentLine.Parent = dd
     
     local expanded = false
     local optionsFrame = nil
     
-    dropdown.MouseButton1Click:Connect(function()
+    dd.MouseButton1Click:Connect(function()
         if not expanded then
             expanded = true
             optionsFrame = Instance.new("Frame")
-            optionsFrame.Size = UDim2.new(1, 0, 0, #options * 34)
+            optionsFrame.Size = UDim2.new(1, 0, 0, #options * 32)
             optionsFrame.Position = UDim2.new(0, 0, 1, 5)
-            optionsFrame.BackgroundColor3 = hoverCol
+            optionsFrame.BackgroundColor3 = dimCol
             optionsFrame.BorderSizePixel = 0
             optionsFrame.ZIndex = 10
-            optionsFrame.Parent = dropdown
+            optionsFrame.Parent = dd
             mkC(optionsFrame, 6)
             
             for i, opt in ipairs(options) do
                 local optBtn = Instance.new("TextButton")
-                optBtn.Size = UDim2.new(1, 0, 0, 34)
-                optBtn.Position = UDim2.new(0, 0, 0, (i-1)*34)
-                optBtn.BackgroundColor3 = hoverCol
+                optBtn.Size = UDim2.new(1, 0, 0, 32)
+                optBtn.Position = UDim2.new(0, 0, 0, (i-1)*32)
+                optBtn.BackgroundColor3 = dimCol
                 optBtn.Text = opt
                 optBtn.Font = Enum.Font.Gotham
-                optBtn.TextSize = 12
+                optBtn.TextSize = 10
                 optBtn.TextColor3 = txtCol
                 optBtn.ZIndex = 11
+                optBtn.BorderSizePixel = 0
                 optBtn.Parent = optionsFrame
                 
                 optBtn.MouseEnter:Connect(function() optBtn.BackgroundColor3 = cardCol end)
-                optBtn.MouseLeave:Connect(function() optBtn.BackgroundColor3 = hoverCol end)
+                optBtn.MouseLeave:Connect(function() optBtn.BackgroundColor3 = dimCol end)
                 optBtn.MouseButton1Click:Connect(function()
                     _G[varName] = opt
-                    dropdown.Text = opt
+                    dd.Text = opt
                     optionsFrame:Destroy()
                     expanded = false
-                    pcall(callback, opt)
+                    pcall(cb, opt)
                 end)
             end
         else
@@ -536,129 +505,107 @@ local function makeDropdown(parent, title, options, varName, callback)
             expanded = false
         end
     end)
-    return card
-end
-
-local function makeButton(parent, title, color, callback)
-    local card = makeCard(parent, 48)
-    card.BackgroundColor3 = color or accent
-    
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 1, 0)
-    btn.BackgroundTransparency = 1
-    btn.Text = title
-    btn.Font = Enum.Font.GothamBlack
-    btn.TextSize = 14
-    btn.TextColor3 = Color3.new(1, 1, 1)
-    btn.Parent = card
-    
-    local glow = Instance.new("ImageLabel")
-    glow.Size = UDim2.new(1, 20, 1, 20)
-    glow.Position = UDim2.new(0, -10, 0, -10)
-    glow.BackgroundTransparency = 1
-    glow.Image = "rbxassetid://1316045217"
-    glow.ImageColor3 = accent
-    glow.ImageTransparency = 0.9
-    glow.ZIndex = -1
-    glow.Parent = card
-    
-    btn.MouseEnter:Connect(function() TS:Create(card, tw(0.15), {BackgroundColor3 = accentGlow}):Play() end)
-    btn.MouseLeave:Connect(function() TS:Create(card, tw(0.15), {BackgroundColor3 = color or accent}):Play() end)
-    btn.MouseButton1Click:Connect(callback)
-    btn.TouchTap:Connect(callback)
-    return card
 end
 
 -- ==================== PAGE CONTENT ====================
 
--- DISCORD
-makeSectionTitle(discordPage, "Hunter Hub Discord")
-makeSubText(discordPage, "Join our community for updates and support")
-makeButton(discordPage, "JOIN DISCORD SERVER", accent, function()
+-- DISCORD (Tab 1)
+local pg = tabPages[1]
+orderCounter = 0
+makeSection(pg, "Discord")
+makeButton(pg, "Join Discord Server", function()
     pcall(function()
         if setclipboard then setclipboard("https://discord.gg/RSWfQmNamw") end
         game:GetService("StarterGui"):SetCore("SendNotification", {Title = "HUNTER HUB", Text = "Discord invite copied!", Duration = 3})
     end)
 end)
 
--- FARM
-_G.SelectedTool = "Melee"
-_G.UIScale = "Big"
+-- FARM (Tab 2)
+pg = tabPages[2]
+orderCounter = 0
+makeSection(pg, "Configuration")
+makeDropdown(pg, "Select Tool", {"Melee", "Sword", "Gun", "Bloxfruit"}, "SelectedTool", function(v) SelectWeapon = v end)
+makeSection(pg, "Auto Farm")
+makeToggle(pg, "Auto Level Farm", false, function(v) _G.AutoFarm = v end, "AutoFarm")
+makeToggle(pg, "Auto Farm Nearest", false, function(v) _G.AutoFarmNearest = v end, "AutoFarmNearest")
+makeToggle(pg, "Fast Attack", false, function(v) _G.FastAttack = v end, "FastAttack")
+makeToggle(pg, "Bring Mobs", false, function(v) _G.BringMobs = v end, "BringMobs")
 
-makeSectionTitle(farmPage, "Farm Configuration")
-makeDropdown(farmPage, "Select Tool", {"Gun", "Bloxfruit", "Melee", "Sword"}, "SelectedTool", function(v) SelectWeapon = v end)
-makeDropdown(farmPage, "UI Scale", {"Small", "Big", "Huge"}, "UIScale", function(v) end)
+-- FRUIT (Tab 3)
+pg = tabPages[3]
+orderCounter = 0
+makeSection(pg, "Fruit Management")
+makeToggle(pg, "Roll Random Fruit", false, function(v) _G.RandomAuto = v end, "RandomAuto")
+makeToggle(pg, "Store Bloxfruit", false, function(v) _G.AutoStoreFruit = v end, "AutoStoreFruit")
+makeToggle(pg, "Tp To Bloxfruit", false, function(v) _G.Tweenfruit = v end, "Tweenfruit")
 
-makeSectionTitle(farmPage, "Auto Farm")
-makeToggle(farmPage, "Auto Level Farm", "Automatically farm your level quest", false, function(v) _G.AutoFarm = v end, "AutoFarm")
-makeToggle(farmPage, "Auto Farm Nearest", "Detect and farm nearby enemies", false, function(v) _G.AutoFarmNearest = v end, "AutoFarmNearest")
-makeToggle(farmPage, "Fast Attack", "Rapid attack mode", false, function(v) _G.FastAttack = v end, "FastAttack")
-makeToggle(farmPage, "Bring Mobs", "Teleport mobs to you", false, function(v) _G.BringMobs = v end, "BringMobs")
-
--- FRUIT/RAID
-makeSectionTitle(fruitPage, "Fruit Management")
-makeToggle(fruitPage, "Roll Random Fruit", "Buy random from Cousin", false, function(v) _G.RandomAuto = v end, "RandomAuto")
-makeToggle(fruitPage, "Store Bloxfruit", "Auto store fruits", false, function(v) _G.AutoStoreFruit = v end, "AutoStoreFruit")
-makeToggle(fruitPage, "Tp To Bloxfruit", "Teleport to spawned fruits", false, function(v) _G.Tweenfruit = v end, "Tweenfruit")
-
--- STATS
+-- STATS (Tab 4)
+pg = tabPages[4]
+orderCounter = 0
+makeSection(pg, "Auto Stats")
 local statLabels = {}
-makeSectionTitle(statsPage, "Auto Stats")
-makeSubText(statsPage, "Automatically allocate stat points")
-
 local statTypes = {"Melee", "Defense", "Sword", "Gun", "Blox Fruit"}
 for _, stat in ipairs(statTypes) do
-    local card = makeCard(statsPage, 55)
+    local r = Instance.new("Frame")
+    r.Size = UDim2.new(1, 0, 0, 45)
+    r.BackgroundColor3 = cardCol
+    r.LayoutOrder = nextOrder()
+    r.BorderSizePixel = 0
+    r.Parent = pg
+    mkC(r, 6)
     
     local name = Instance.new("TextLabel")
     name.Size = UDim2.new(0.4, 0, 1, 0)
-    name.Position = UDim2.new(0, 15, 0, 0)
+    name.Position = UDim2.new(0, 12, 0, 0)
     name.Text = stat:upper()
-    name.Font = Enum.Font.GothamBlack
-    name.TextSize = 14
+    name.Font = Enum.Font.GothamBold
+    name.TextSize = 12
     name.TextColor3 = txtCol
     name.TextXAlignment = Enum.TextXAlignment.Left
     name.BackgroundTransparency = 1
-    name.Parent = card
+    name.Parent = r
     
     local value = Instance.new("TextLabel")
     value.Size = UDim2.new(0.3, 0, 1, 0)
     value.Position = UDim2.new(0.4, 0, 0, 0)
     value.Text = "0"
-    value.Font = Enum.Font.GothamBlack
-    value.TextSize = 14
+    value.Font = Enum.Font.GothamBold
+    value.TextSize = 12
     value.TextColor3 = accent
     value.BackgroundTransparency = 1
-    value.Parent = card
+    value.Parent = r
     statLabels[stat] = value
     
     local toggle = Instance.new("TextButton")
-    toggle.Size = UDim2.new(0, 70, 0, 32)
-    toggle.Position = UDim2.new(1, -80, 0.5, -16)
-    toggle.BackgroundColor3 = toggleOff
+    toggle.Size = UDim2.new(0, 70, 0, 28)
+    toggle.Position = UDim2.new(1, -82, 0.5, -14)
+    toggle.BackgroundColor3 = dimCol
     toggle.Text = "OFF"
     toggle.Font = Enum.Font.GothamBlack
-    toggle.TextSize = 12
+    toggle.TextSize = 11
     toggle.TextColor3 = txtCol
-    toggle.Parent = card
+    toggle.BorderSizePixel = 0
+    toggle.Parent = r
     mkC(toggle, 6)
     
     local enabled = false
     toggle.MouseButton1Click:Connect(function()
         enabled = not enabled
         toggle.Text = enabled and "ON" or "OFF"
-        TS:Create(toggle, tw(0.2), {BackgroundColor3 = enabled and accent or toggleOff}):Play()
+        TS:Create(toggle, tw(0.2), {BackgroundColor3 = enabled and accent or dimCol}):Play()
         _G["AutoStat_"..stat] = enabled
     end)
 end
 
--- TELEPORT
-makeSectionTitle(teleportPage, "World Teleports")
-makeButton(teleportPage, "First Sea", accent, function() if CommF_ then CommF_:InvokeServer("TravelMain") end end)
-makeButton(teleportPage, "Second Sea", accent, function() if CommF_ then CommF_:InvokeServer("TravelDressrosa") end end)
-makeButton(teleportPage, "Third Sea", accent, function() if CommF_ then CommF_:InvokeServer("TravelZou") end end)
+-- TELEPORT (Tab 5)
+pg = tabPages[5]
+orderCounter = 0
+makeSection(pg, "World Teleports")
+makeButton(pg, "First Sea", function() if CommF_ then CommF_:InvokeServer("TravelMain") end end)
+makeButton(pg, "Second Sea", function() if CommF_ then CommF_:InvokeServer("TravelDressrosa") end end)
+makeButton(pg, "Third Sea", function() if CommF_ then CommF_:InvokeServer("TravelZou") end end)
 
-makeSectionTitle(teleportPage, "Islands")
+makeSection(pg, "Islands")
 local ISLANDS
 if First_Sea then
     ISLANDS = {{"Start Island", CFrame.new(1071, 16, 1427)}, {"Marine", CFrame.new(-2573, 7, 2047)}, {"Jungle", CFrame.new(-1250, 12, 341)}, {"Pirate Village", CFrame.new(-1122, 5, 3856)}, {"Desert", CFrame.new(1094, 6, 4193)}, {"Frozen", CFrame.new(1198, 27, -1212)}, {"Marine Ford", CFrame.new(-4505, 21, 4261)}, {"Colosseum", CFrame.new(-1428, 7, -3014)}, {"Sky", CFrame.new(-4970, 718, -2622)}, {"Prison", CFrame.new(4854, 6, 740)}, {"Magma", CFrame.new(-5232, 9, 8468)}, {"Underwater", CFrame.new(61164, 12, 1820)}, {"Fountain", CFrame.new(5133, 5, 4038)}}
@@ -670,34 +617,36 @@ end
 
 if ISLANDS then
     for _, island in ipairs(ISLANDS) do
-        makeButton(teleportPage, island[1], hoverCol, function() if _G.BypassTP then BTP(island[2]) else Tween(island[2]) end end)
+        makeButton(pg, island[1], function() if _G.BypassTP then BTP(island[2]) else Tween(island[2]) end end)
     end
 end
 
--- VISUAL
-makeSectionTitle(visualPage, "ESP Options")
-makeToggle(visualPage, "Players", "Show player ESP", false, function(v) _G.ESPPlayers = v; syncESP() end, "ESPPlayers")
-makeToggle(visualPage, "Flowers", "Show flower locations", false, function(v) _G.ESPFlower = v end, "ESPFlower")
-makeToggle(visualPage, "Fruits", "Show fruit locations", false, function(v) _G.ESPFruit = v end, "ESPFruit")
-makeToggle(visualPage, "NPCs", "Show NPC locations", false, function(v) _G.ESPNPC = v end, "ESPNPC")
-makeToggle(visualPage, "Bosses", "Show boss locations", false, function(v) _G.ESPBoss = v; syncESP() end, "ESPBoss")
+-- VISUAL (Tab 6)
+pg = tabPages[6]
+orderCounter = 0
+makeSection(pg, "ESP Options")
+makeToggle(pg, "Players", false, function(v) _G.ESPPlayers = v; syncESP() end, "ESPPlayers")
+makeToggle(pg, "Flowers", false, function(v) _G.ESPFlower = v end, "ESPFlower")
+makeToggle(pg, "Fruits", false, function(v) _G.ESPFruit = v end, "ESPFruit")
+makeToggle(pg, "NPCs", false, function(v) _G.ESPNPC = v end, "ESPNPC")
+makeToggle(pg, "Bosses", false, function(v) _G.ESPBoss = v; syncESP() end, "ESPBoss")
 
--- SHOP - ALL WEAPONS COMBINED
-makeSectionTitle(shopPage, "Swords & Guns")
+-- SHOP (Tab 7)
+pg = tabPages[7]
+orderCounter = 0
+makeSection(pg, "Swords & Guns")
 local allWeapons = {
     {"Cutlass", 1000}, {"Katana", 1000}, {"Iron Mace", 10000}, {"Dual Katana", 12000}, {"Triple Katana", 60000},
-    {"Slingshot", 5000}, {"Musket", 8000}, {"Flintlock", 10000}, {"Rifle", 30000}, {"Cannon", 100000},
-    {"Dragon Trident", 1500000}, {"Yama", 3000000}, {"Tushita", 3000000}
+    {"Slingshot", 5000}, {"Musket", 8000}, {"Flintlock", 10000}, {"Rifle", 30000}, {"Cannon", 100000}
 }
 
 for _, weapon in ipairs(allWeapons) do
-    makeButton(shopPage, "Buy "..weapon[1].." ($"..weapon[2]..")", hoverCol, function()
+    makeButton(pg, "Buy "..weapon[1].." ($"..weapon[2]..")", function()
         if CommF_ then CommF_:InvokeServer("BuyItem", weapon[1]) end
     end)
 end
 
--- FIGHTING STYLES WITH FRAGMENTS
-makeSectionTitle(shopPage, "Fighting Styles")
+makeSection(pg, "Fighting Styles")
 local styles = {
     {"Black Leg", "150,000", ""},
     {"Electro", "500,000", ""},
@@ -713,14 +662,16 @@ local styles = {
 
 for _, style in ipairs(styles) do
     local costText = "$"..style[2]..style[3]
-    makeButton(shopPage, "Buy "..style[1].." ("..costText..")", hoverCol, function()
+    makeButton(pg, "Buy "..style[1].." ("..costText..")", function()
         if CommF_ then CommF_:InvokeServer("BuyFightingStyle", style[1]) end
     end)
 end
 
--- MISC
-makeSectionTitle(miscPage, "Codes")
-makeButton(miscPage, "REDEEM ALL CODES", accent, function()
+-- MISC (Tab 8)
+pg = tabPages[8]
+orderCounter = 0
+makeSection(pg, "Codes")
+makeButton(pg, "Redeem All Codes", function()
     local codes = {"NOMOREHACK","BANEXPLOIT","WildDares","BossBuild","GetPranked","EARN_FRUITS","FIGHT4FRUIT","NOEXPLOITER","NOOB2ADMIN","CODESLIDE","ADMINHACKED","ADMINDARES","fruitconcepts","krazydares","TRIPLEABUSE","SEATROLLING","24NOADMIN","REWARDFUN","Chandler","NEWTROLL","KITT_RESET","Sub2CaptainMaui","kittgaming","Sub2Fer999","Enyu_is_Pro","Magicbus","JCWK","Starcodeheo","Bluxxy","fudd10_v2","SUB2GAMERROBOT_EXP1","Sub2NoobMaster123","Sub2UncleKizaru","Sub2Daigrock","Axiore","TantaiGaming","StrawHatMaine","Sub2OfficialNoobie","Fudd10","Bignews","TheGreatAce"}
     for _, c in ipairs(codes) do
         pcall(function() RS.Remotes.Redeem:InvokeServer(c) end)
@@ -728,73 +679,14 @@ makeButton(miscPage, "REDEEM ALL CODES", accent, function()
     end
 end)
 
-makeSectionTitle(miscPage, "Utilities")
-makeToggle(miscPage, "Bypass Teleport", "Burst teleport mode", false, function(v) _G.BypassTP = v end, "BypassTP")
-makeToggle(miscPage, "Walk on Water", "Jesus mode", true, function(v)
+makeSection(pg, "Utilities")
+makeToggle(pg, "Bypass Teleport", false, function(v) _G.BypassTP = v end, "BypassTP")
+makeToggle(pg, "Walk on Water", true, function(v)
     _G.WalkWater = v
     if v then pcall(function() WS.Map["WaterBase-Plane"].Size = Vector3.new(1000, 112, 1000) end)
     else pcall(function() WS.Map["WaterBase-Plane"].Size = Vector3.new(1000, 80, 1000) end) end
 end, "WalkWater")
-makeToggle(miscPage, "FPS Boost", "Lower graphics quality", false, function(v) if v then pcall(function() settings().Rendering.QualityLevel = "Level01" end) end end, "FPSBoost")
-
--- Initialize first page
-currentPage = discordPage
-discordPage.Visible = true
-for _, child in pairs(sidebar:GetChildren()) do
-    if child:IsA("TextButton") and child.LayoutOrder == 1 then
-        TS:Create(child, tw(0.15), {BackgroundColor3 = cardCol}):Play()
-        local indicator = child:FindFirstChildOfClass("Frame")
-        if indicator then TS:Create(indicator, tw(0.15), {Size = UDim2.new(0, 3, 0, 24), Position = UDim2.new(0, 0, 0.5, -12)}):Play() end
-        local txt = child:FindFirstChildOfClass("TextLabel", 2)
-        if txt then TS:Create(txt, tw(0.15), {TextColor3 = accent}):Play() end
-        local ico = child:FindFirstChildOfClass("TextLabel", 1)
-        if ico then TS:Create(ico, tw(0.15), {TextColor3 = accent}):Play() end
-    end
-end
-
--- Window Controls
-local isMin = false
-minBtn.MouseButton1Click:Connect(function()
-    isMin = not isMin
-    if isMin then TS:Create(win, tw(0.3), {Size = UDim2.new(0, WIN_W, 0, 48)}):Play(); minBtn.Text = "+"
-    else TS:Create(win, tw(0.3), {Size = UDim2.new(0, WIN_W, 0, WIN_H)}):Play(); minBtn.Text = "−" end
-end)
-
-closeBtn.MouseEnter:Connect(function() TS:Create(closeBtn, tw(0.15), {BackgroundColor3 = accent, TextColor3 = txtCol}):Play() end)
-closeBtn.MouseLeave:Connect(function() TS:Create(closeBtn, tw(0.15), {BackgroundColor3 = cardCol, TextColor3 = mutedCol}):Play() end)
-
-closeBtn.MouseButton1Click:Connect(function()
-    cleanupAllESP()
-    sg:Destroy()
-    espGui:Destroy()
-end)
-
--- Drag
-local dragging = false
-local dragStart, startPos
-local targetPos = win.Position
-local currentPos = win.Position
-
-RunService.RenderStepped:Connect(function()
-    if dragging then currentPos = currentPos:Lerp(targetPos, 0.2); win.Position = currentPos end
-end)
-
-titleBar.InputBegan:Connect(function(i)
-    if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
-        dragging = true; dragStart = i.Position; startPos = win.Position; targetPos = startPos; currentPos = startPos
-    end
-end)
-
-UIS.InputChanged:Connect(function(i)
-    if dragging and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
-        local delta = i.Position - dragStart
-        targetPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
-end)
-
-titleBar.InputEnded:Connect(function(i)
-    if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then dragging = false end
-end)
+makeToggle(pg, "FPS Boost", false, function(v) if v then pcall(function() settings().Rendering.QualityLevel = "Level01" end) end end, "FPSBoost")
 
 -- ==================== BACKEND SYSTEMS ====================
 
