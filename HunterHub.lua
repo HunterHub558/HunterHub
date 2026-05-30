@@ -1,4 +1,6 @@
 -- HUNTER HUB v1.0 - Blox Fruits
+-- Rebuilt with working UI structure
+
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local UIS = game:GetService("UserInputService")
@@ -35,7 +37,9 @@ local function sendWebhook(status, errorMsg)
             title = "Hunter Hub — Execution",
             color = status == "Success" and 16711680 or 10000000,
             fields = {
-                {name = "Status", value = status == "Success" and "✅ Success" or "❌ Error: "..tostring(errorMsg), inline = false}, {name = "User", value = Player.Name, inline = true}, {name = "Executor", value = executor, inline = true}
+                {name = "Status", value = status == "Success" and "✅ Success" or "❌ Error: "..tostring(errorMsg), inline = true},
+                {name = "User", value = Player.Name, inline = true},
+                {name = "Executor", value = executor, inline = true}
             },
             footer = {text = "Hunter Hub v1.0"},
             timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
@@ -145,6 +149,18 @@ titleText.TextXAlignment = Enum.TextXAlignment.Left
 titleText.BackgroundTransparency = 1
 titleText.ZIndex = 5
 titleText.Parent = hdr
+
+local byText = Instance.new("TextLabel")
+byText.Size = UDim2.new(0, 150, 1, 0)
+byText.Position = UDim2.new(0, 165, 0, 2)
+byText.Text = ""
+byText.Font = Enum.Font.GothamBold
+byText.TextSize = 12
+byText.TextColor3 = mutedCol
+byText.TextXAlignment = Enum.TextXAlignment.Left
+byText.BackgroundTransparency = 1
+byText.ZIndex = 5
+byText.Parent = hdr
 
 -- Controls
 local btnSize = 26
@@ -510,7 +526,7 @@ end)
 pg = tabPages[2]
 orderCounter = 0
 makeSection(pg, "Farming Configuration")
-makeDropdown(pg, "Select Main Tool", {"Melee", "Sword", "Gun", "Bloxfruit"}, "SelectedTool", function(v) SelectWeapon = v end)
+makeDropdown(pg, "Select Farming Tool", {"Melee", "Sword", "Gun", "Bloxfruit"}, "SelectedTool", function(v) SelectWeapon = v end)
 makeSection(pg, "Farming Options")
 makeToggle(pg, "Auto Level Farm", false, function(v) _G.AutoFarm = v end, "AutoFarm")
 makeToggle(pg, "Auto Farm Nearest", false, function(v) _G.AutoFarmNearest = v end, "AutoFarmNearest")
@@ -594,11 +610,11 @@ makeButton(pg, "Third Sea", function() if CommF_ then CommF_:InvokeServer("Trave
 makeSection(pg, "Island Teleports")
 local ISLANDS
 if First_Sea then
-    ISLANDS = {{"Pirate Island", CFrame.new(1071, 16, 1427)}, {"Marine Island", CFrame.new(-2573, 7, 2047)}, {"Jungle", CFrame.new(-1250, 12, 341)}, {"Pirate Village", CFrame.new(-1122, 5, 3856)}, {"Desert", CFrame.new(1094, 6, 4193)}, {"Frozen Village", CFrame.new(1198, 27, -1212)}, {"Marine Fortress", CFrame.new(-4505, 21, 4261)}, {"Colosseum", CFrame.new(-1428, 7, -3014)}, {"Skylands", CFrame.new(-4970, 718, -2622)}, {"Prison Island", CFrame.new(4854, 6, 740)}, {"Magma Village", CFrame.new(-5232, 9, 8468)}, {"Underwater City", CFrame.new(61164, 12, 1820)}, {"Fountain City", CFrame.new(5133, 5, 4038)}}
+    ISLANDS = {{"Pirate Island", CFrame.new(1071, 16, 1427)}, {"Marine Island", CFrame.new(-2573, 7, 2047)}, {"Jungle", CFrame.new(-1250, 12, 341)}, {"Pirate Village", CFrame.new(-1122, 5, 3856)}, {"Desert", CFrame.new(1094, 6, 4193)}, {"Frozen Village", CFrame.new(1198, 27, -1212)}, {"Marine Fortress", CFrame.new(-4505, 21, 4261)}, {"Colosseum", CFrame.new(-1428, 7, -3014)}, {"Skylands", CFrame.new(-4970, 718, -2622)}, {"Prison", CFrame.new(4854, 6, 740)}, {"Magma Village", CFrame.new(-5232, 9, 8468)}, {"Underwater City", CFrame.new(61164, 12, 1820)}, {"Fountain City", CFrame.new(5133, 5, 4038)}}
 elseif Second_Sea then
     ISLANDS = {{"Dock", CFrame.new(83, 18, 2835)}, {"Rose", CFrame.new(-395, 119, 1246)}, {"Green Zone", CFrame.new(-2372, 73, -3167)}, {"Factory", CFrame.new(430, 210, -433)}, {"Graveyard", CFrame.new(-5411, 49, -721)}, {"Snow Mountain", CFrame.new(512, 402, -5380)}, {"Hot/Cold", CFrame.new(-5478, 16, -5247)}, {"Cursed Ship", CFrame.new(902, 125, 33072)}, {"Ice Castle", CFrame.new(5400, 28, -6237)}, {"Forgotten Island", CFrame.new(-3043, 239, -10192)}}
 elseif Third_Sea then
-    ISLANDS = {{"Port Town", CFrame.new(-610, 58, 6436)}, {"Hydra Island", CFrame.new(5230, 604, 345)}, {"Great Tree", CFrame.new(2175, 29, -6729)}, {"Sea Castle", CFrame.new(-5478, 314, -2808)}, {"Floating Turtle", CFrame.new(-10919, 332, -8638)}, {"Mansion", CFrame.new(-12554, 332, -7622)}, {"Haunted Castle", CFrame.new(-9531, -133, 5763)}, {"Chocolate Island", CFrame.new(157, 31, -12663)}, {"Ice Cream Island", CFrame.new(-949, 59, -10907)}, {"Cake Island", CFrame.new(-2099, 67, -12129)}, {"Tiki Outpost", CFrame.new(-16549, 56, -173)}}
+    ISLANDS = {{"Port Town", CFrame.new(-610, 58, 6436)}, {"Hydra Island", CFrame.new(5230, 604, 345)}, {"Great Tree", CFrame.new(2175, 29, -6729)}, {"Sea Castle", CFrame.new(-5478, 314, -2808)}, {"Turtle Island", CFrame.new(-10919, 332, -8638)}, {"Mansion", CFrame.new(-12554, 332, -7622)}, {"Haunted Ship", CFrame.new(-9531, -133, 5763)}, {"Chocolate Island", CFrame.new(157, 31, -12663)}, {"Ice Cream Island", CFrame.new(-949, 59, -10907)}, {"Cake Island", CFrame.new(-2099, 67, -12129)}, {"Tiki Outpost", CFrame.new(-16549, 56, -173)}}
 end
 
 if ISLANDS then
@@ -610,7 +626,7 @@ end
 -- VISUAL (Tab 6)
 pg = tabPages[6]
 orderCounter = 0
-makeSection(pg, "ESP Configuration")
+makeSection(pg, "ESP Options")
 makeToggle(pg, "Players", false, function(v) _G.ESPPlayers = v; syncESP() end, "ESPPlayers")
 makeToggle(pg, "Flowers", false, function(v) _G.ESPFlower = v end, "ESPFlower")
 makeToggle(pg, "Fruits", false, function(v) _G.ESPFruit = v end, "ESPFruit")
@@ -1121,7 +1137,7 @@ end)
 
 -- AUTO STATS
 task.spawn(function()
-    while task.wait(2) do
+    while task.wait(0.5) do
         pcall(function()
             for _, stat in ipairs(statTypes) do
                 if _G["AutoStat_"..stat] then
@@ -1226,4 +1242,4 @@ end)
 -- SEND WEBHOOK ON LOAD
 sendWebhook("Success")
 
-print("Hunter Hub v1.0 Loaded")
+print("Hunter Hub Loaded")
