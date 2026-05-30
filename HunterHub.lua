@@ -1,6 +1,4 @@
 -- HUNTER HUB v1.0 - Blox Fruits
--- Rebuilt with working UI structure
-
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local UIS = game:GetService("UserInputService")
