@@ -1,5 +1,5 @@
 # Hunter Hub
-![Preview]([https://raw.githubusercontent.com/AZYsGithub/DexPlusPlus/main/preview.png](https://media.discordapp.net/attachments/1510125301592621235/1511425064871002242/Hunter_Hub.png?ex=6a2067c8&is=6a1f1648&hm=4baf43a73bfff403f7aa74ac854f7138aa625eb5fe18364f145330d2232d2b77&=&format=webp&quality=lossless))
+![Preview](https://media.discordapp.net/attachments/1510125301592621235/1511425064871002242/Hunter_Hub.png?ex=6a2067c8&is=6a1f1648&hm=4baf43a73bfff403f7aa74ac854f7138aa625eb5fe18364f145330d2232d2b77&=&format=webp&quality=lossless)
 
 Hunter Hub is a script made specially for the roblox game **Bloxfruits** By Hamzy.
 
