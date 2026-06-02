@@ -1,6 +1,6 @@
 # Hunter Hub
 
-Hunter Hub is a script made specially for the roblox game **Bloxfruits** By Hamzy.
+Hunter Hub is a script made specially for the roblox game **Bloxfruits** By **Hamzy_195H**.
 
 ## Latest Version Script
 ```lua
