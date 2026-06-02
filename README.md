@@ -1,32 +1,22 @@
-# HunterHub
-HunterHub is a script made for roblox bloxfruits By Hamzy_195H.
+# Hunter Hub
+![Preview]([https://raw.githubusercontent.com/AZYsGithub/DexPlusPlus/main/preview.png](https://media.discordapp.net/attachments/1510125301592621235/1511425064871002242/Hunter_Hub.png?ex=6a2067c8&is=6a1f1648&hm=4baf43a73bfff403f7aa74ac854f7138aa625eb5fe18364f145330d2232d2b77&=&format=webp&quality=lossless))
 
-Latest Version Script
+Hunter Hub is a script made specially for the roblox game **Bloxfruits** By Hamzy.
+
+## Latest Version Script
+```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/HunterHub558/HunterHub/refs/heads/main/HunterHub.lua"))()
-For specific versions, go to releases.
+```
 
-What's the difference between Dex and Dex++?
-Since the original Dex is the last release and Moon have discontinued it, it still has some missing features. Here are the features that were added/fixed in Dex++
+## To Use
+1. Go to
+2. Ensure you have Python 3 (I use 3.9.0)
+3. Run build.py
+4. The executable script will be created as out.lua
 
-Using New Roblox Studio Icons
-Updated API
-Uses Konstant, Advanced Decompiler and Shiny/Medal as fallback decompilers (for shitsploits who doesn't have it)
-'getscriptbytecode' is required
+## Our Discord Server
+https://discord.gg/SE8CBJURZr
 
-Uses USSI as fallback saveinstance
-Mobile Input Support (Window drag, resizing works fully on touch)
-Console Output
-Model Viewer (basically 3D Preview)
-Revived Save Instance (original Dex doesnt have it, but does in Dex 2.0)
-Click part to select (thx Toon :3)
-CodeFrame cursor offset (where cursor on textbox were not aligned properly)
-To Build
-Download this repository
-Ensure you have Python 3 (I use 3.9.0)
-Run build.py
-The executable script will be created as out.lua
-About Dex Roadmap
-The concept of the Dex roadmap is amazing, however neither me nor Moon have the ability to fulfil the full roadmap. I did have added few stuffs in my fork but mostly of them are beyond my limit and i did this project for fun.
-
-Our Discord Server
-https://discord.gg/ndhGeSGkWn
+## Credits
+- (https://discord.com/users/1440816817131098247) – HunterHub Creator 
+- (https://discord.com/users/1374359938859667541) – Helped develop with the structre 
