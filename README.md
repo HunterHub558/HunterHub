@@ -19,4 +19,4 @@ https://discord.gg/SE8CBJURZr
 
 ## Credits
 - (https://discord.com/users/1440816817131098247) – HunterHub Creator 
-- (https://discord.com/users/1374359938859667541) – Helped develop with the structre 
+- (https://discord.com/users/1374359938859667541) – Helped develop with the structure
