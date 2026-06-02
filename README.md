@@ -18,5 +18,5 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/HunterHub558/HunterHu
 https://discord.gg/SE8CBJURZr
 
 ## Credits
-- (https://discord.com/users/1440816817131098247) – HunterHub Creator 
-- (https://discord.com/users/1374359938859667541) – Helped develop with the structure
+- (https://discord.com/users/1440816817131098247) – HunterHub Creator.
+- (https://discord.com/users/1374359938859667541) – Helped with developing the structure.
