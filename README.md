@@ -9,10 +9,11 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/HunterHub558/HunterHu
 ```
 
 ## To Use
-1. Go to
-2. Ensure you have Python 3 (I use 3.9.0)
-3. Run build.py
-4. The executable script will be created as out.lua
+1. Go to https://weao.xyz
+2. Select an executer with sUNC 80% or higher
+3. Download the executer
+4. Inject the executer into roblox
+5. Run the script
 
 ## Our Discord Server
 [Discord Server](https://discord.gg/SE8CBJURZr)
