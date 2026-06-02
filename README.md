@@ -16,7 +16,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/HunterHub558/HunterHu
 5. Run the script
 
 ## Our Discord Server
-[Discord Server](https://discord.gg/SE8CBJURZr)
+- [Discord Server](https://discord.gg/SE8CBJURZr)
 
 ## Credits
 - [Discord Profile](https://discord.com/users/1440816817131098247) – HunterHub Creator.
